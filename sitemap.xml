@@ -2,7 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://example.com/2021/05/25/first/</loc>
+    <loc>http://nyanncat.github.io/2021/05/25/threadlocal/</loc>
+    
+    <lastmod>2021-05-25</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://nyanncat.github.io/2021/05/25/ShardingJDBC/</loc>
     
     <lastmod>2021-05-25</lastmod>
     
@@ -10,12 +17,26 @@
   
 
   <url>
-    <loc>http://example.com/</loc>
+    <loc>http://nyanncat.github.io/</loc>
     <lastmod>2021-05-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
+  
+  <url>
+    <loc>http://nyanncat.github.io/tags/MySQL/</loc>
+    <lastmod>2021-05-25</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://nyanncat.github.io/tags/ShardingJDBC/</loc>
+    <lastmod>2021-05-25</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
   
 
   

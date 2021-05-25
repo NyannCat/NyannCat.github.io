@@ -3,11 +3,11 @@
   <title>Hexo</title>
   
   
-  <link href="http://example.com/atom.xml" rel="self"/>
+  <link href="http://nyanncat.github.io/atom.xml" rel="self"/>
   
-  <link href="http://example.com/"/>
-  <updated>2021-05-25T11:52:51.258Z</updated>
-  <id>http://example.com/</id>
+  <link href="http://nyanncat.github.io/"/>
+  <updated>2021-05-25T12:44:57.472Z</updated>
+  <id>http://nyanncat.github.io/</id>
   
   <author>
     <name>John Doe</name>
@@ -17,11 +17,32 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>fist article</title>
-    <link href="http://example.com/2021/05/25/first/"/>
-    <id>http://example.com/2021/05/25/first/</id>
+    <title>threadlocal</title>
+    <link href="http://nyanncat.github.io/2021/05/25/threadlocal/"/>
+    <id>http://nyanncat.github.io/2021/05/25/threadlocal/</id>
+    <published>2021-05-25T12:44:28.000Z</published>
+    <updated>2021-05-25T12:44:57.472Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h1><blockquote><p>线程内部的局部变量，不同的线程之间不会相互干扰</p></blockquote><h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>为了保证多线程对共享变量的安全访问，通常使用锁来保证同一时刻只有一个线程对共享变量进行操作。</p><p>Thread Local 使共享资源在每个线程内都有独立的拷贝，避免了加锁。</p><p>常见场景：<strong>数据库连接</strong>，<strong>Session管理</strong>，<strong>Spring事务</strong></p><h2 id="内存泄漏"><a href="#内存泄漏" class="headerlink" title="内存泄漏"></a>内存泄漏</h2><ul><li><p><code>ThreadLocalMap</code> 中的<code>entity</code>使用<code>WeakReference</code>来避免<code>ThreadLocal</code>对象内存泄漏</p></li><li><p><code>Value</code> 仍然存在内存泄漏的风险，特别是使用线程池的情况下, <code>Thread</code>引用对象无法被回收</p><p>就其原因**<code>Thread</code>的生命周期和<code>ThreadLocalMap</code>的生命周期一致**</p></li><li><p>建议：==每次调用完成后，使用remove方法清理对象==</p></li></ul><p><img src="/2021/05/25/threadlocal/ThreadLocal.png" alt="ThreadLocal"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;ThreadLocal&quot;&gt;&lt;a href=&quot;#ThreadLocal&quot; class=&quot;headerlink&quot; title=&quot;ThreadLocal&quot;&gt;&lt;/a&gt;ThreadLocal&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;线程内部的局部变量，不同的线程之间不会相互</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>分库分表-ShardingJDBC</title>
+    <link href="http://nyanncat.github.io/2021/05/25/ShardingJDBC/"/>
+    <id>http://nyanncat.github.io/2021/05/25/ShardingJDBC/</id>
     <published>2021-05-25T11:49:41.000Z</published>
-    <updated>2021-05-25T11:52:51.258Z</updated>
+    <updated>2021-05-25T12:34:18.926Z</updated>
     
     <content type="html"><![CDATA[<h1 id="为什么需要分库分表"><a href="#为什么需要分库分表" class="headerlink" title="为什么需要分库分表"></a>为什么需要分库分表</h1><p>随着业务的发展，数据量的增加，单表数据量达到上限，性能瓶颈出现</p><h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><blockquote><p>把数据分散在不同的数据库中，使得单一数据库的数据量变小来缓解单一数据库的性能问题，从而达到提升数据库性能的目的，如下图：将电商数据库拆分为若干独立的数据库，并且对于大表也拆分为若干小表，通过这种数据库拆分的方法来解决数据库的性能问题。</p></blockquote><p><strong>在生产中通常包括：垂直分库、垂直分表、水平分库、水平分表四种方式</strong></p><h3 id="垂直分表"><a href="#垂直分表" class="headerlink" title="垂直分表"></a>垂直分表</h3><p>将访问频次低的商品描述信息单独存放在一张表中，访问频次较高的商品基本信息单独放在一张表中, </p><p>核心概念是<strong>动静分离(热数据/冷数据)</strong></p><p>通常我们按以下原则进行垂直拆分:</p><ol><li>把不常用的字段单独放在一张表</li><li>把text，blob等大字段拆分出来放在附表中</li><li>经常组合查询的列放在一张表中</li></ol><p><img src="https://img-blog.csdnimg.cn/20190903074236479.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDA2MjMzOQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><h3 id="垂直分库"><a href="#垂直分库" class="headerlink" title="垂直分库"></a>垂直分库</h3><p>垂直分库是指按照业务将表进行分类，分布到不同的数据库上面，每个库可以放在不同的服务器上，</p><p>它的核心理念是<strong>专库专用(微服务概念)</strong></p><p><img src="https://img-blog.csdnimg.cn/20190903074403726.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDA2MjMzOQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><p>垂直分库能带来的优点：</p><ol><li><p>解决业务层面的耦合，业务清晰</p></li><li><p>能对不同业务的数据进行分级管理、维护、监控、扩展等</p></li><li><p>高并发场景下，垂直分库一定程度的提升IO、数据库连接数、降低单机硬件资源的瓶颈</p></li></ol><p>缺点：</p><ol><li>跨库的业务不能join，只能通过远程调用方式解决</li><li>分布式事务处理复杂</li></ol><p>垂直分库通过将表按业务分类，然后分布在不同数据库，并且可以将这些数据库部署在不同服务器上，从而达到多个服务器共同分摊压力的效果，但是依然没有解决单表数据量过大的问题。</p><h3 id="水平拆分"><a href="#水平拆分" class="headerlink" title="水平拆分"></a>水平拆分</h3><p><strong>水平分库是把同一个表的数据按一定规则拆到不同的数据库中，每个库可以放在不同的服务器上。</strong></p><p><img src="https://img-blog.csdnimg.cn/20190903074656538.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDA2MjMzOQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>优先级如下：</p><ol><li><p>垂直分表：<strong>可以把一个宽表的字段按访问频次、是否是大字段的原则拆分为多个表，这样既能使业务清晰，还能提升部分性能。拆分后，尽量从业务角度避免联查，否则性能方面将得不偿失。</strong></p></li><li><p>垂直分库：<strong>可以把多个表按业务耦合松紧归类，分别存放在不同的库，这些库可以分布在不同服务器，从而使访问压力被多服务器负载，大大提升性能，同时能提高整体架构的业务清晰度，不同的业务库可根据自身情况定制优化方案。但是它需要解决跨库带来的所有复杂问题。</strong></p></li><li><p>水平分库：<strong>可以把一个表的数据(按数据行)分到多个不同的库，每个库只有这个表的部分数据，这些库可以分布在不同服务器，从而使访问压力被多服务器负载，大大提升性能。它不仅需要解决跨库带来的所有复杂问题，还要解决数据路由的问题(数据路由问题后边介绍)。</strong></p></li><li><p>水平分表：<strong>可以把一个表的数据(按数据行)分到多个同一个数据库的多张表中，每个表只有这个表的部分数据，这样做能小幅提升性能，它仅仅作为水平分库的一个补充优化。</strong></p></li></ol><p>一般来说，在系统设计阶段就应该根据业务耦合松紧来确定垂直分库，垂直分表方案，在数据量及访问压力不是特别大的情况，首先考虑缓存、读写分离、索引技术等方案。若数据量极大，且持续增长，再考虑水平分库水平分表方案。</p><h1 id="最佳实践-Sharding-JDBC"><a href="#最佳实践-Sharding-JDBC" class="headerlink" title="最佳实践 Sharding-JDBC"></a>最佳实践 Sharding-JDBC</h1><blockquote><p>增强版JDBC, 简化对分库分表后，数据查询的操作</p><p>主要功能：</p><ol><li>数据分片</li><li>读写分离</li><li>分片策略定制化/无中心分布式主键</li></ol></blockquote>]]></content>
     
@@ -34,6 +55,10 @@
     
     
     
+    
+    <category term="MySQL" scheme="http://nyanncat.github.io/tags/MySQL/"/>
+    
+    <category term="ShardingJDBC" scheme="http://nyanncat.github.io/tags/ShardingJDBC/"/>
     
   </entry>
   
