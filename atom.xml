@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Hexo</title>
+  
+  
+  <link href="http://example.com/atom.xml" rel="self"/>
+  
+  <link href="http://example.com/"/>
+  <updated>2021-05-25T11:52:51.258Z</updated>
+  <id>http://example.com/</id>
+  
+  <author>
+    <name>John Doe</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>fist article</title>
+    <link href="http://example.com/2021/05/25/first/"/>
+    <id>http://example.com/2021/05/25/first/</id>
+    <published>2021-05-25T11:49:41.000Z</published>
+    <updated>2021-05-25T11:52:51.258Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="为什么需要分库分表"><a href="#为什么需要分库分表" class="headerlink" title="为什么需要分库分表"></a>为什么需要分库分表</h1><p>随着业务的发展，数据量的增加，单表数据量达到上限，性能瓶颈出现</p><h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><blockquote><p>把数据分散在不同的数据库中，使得单一数据库的数据量变小来缓解单一数据库的性能问题，从而达到提升数据库性能的目的，如下图：将电商数据库拆分为若干独立的数据库，并且对于大表也拆分为若干小表，通过这种数据库拆分的方法来解决数据库的性能问题。</p></blockquote><p><strong>在生产中通常包括：垂直分库、垂直分表、水平分库、水平分表四种方式</strong></p><h3 id="垂直分表"><a href="#垂直分表" class="headerlink" title="垂直分表"></a>垂直分表</h3><p>将访问频次低的商品描述信息单独存放在一张表中，访问频次较高的商品基本信息单独放在一张表中, </p><p>核心概念是<strong>动静分离(热数据/冷数据)</strong></p><p>通常我们按以下原则进行垂直拆分:</p><ol><li>把不常用的字段单独放在一张表</li><li>把text，blob等大字段拆分出来放在附表中</li><li>经常组合查询的列放在一张表中</li></ol><p><img src="https://img-blog.csdnimg.cn/20190903074236479.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDA2MjMzOQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><h3 id="垂直分库"><a href="#垂直分库" class="headerlink" title="垂直分库"></a>垂直分库</h3><p>垂直分库是指按照业务将表进行分类，分布到不同的数据库上面，每个库可以放在不同的服务器上，</p><p>它的核心理念是<strong>专库专用(微服务概念)</strong></p><p><img src="https://img-blog.csdnimg.cn/20190903074403726.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDA2MjMzOQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><p>垂直分库能带来的优点：</p><ol><li><p>解决业务层面的耦合，业务清晰</p></li><li><p>能对不同业务的数据进行分级管理、维护、监控、扩展等</p></li><li><p>高并发场景下，垂直分库一定程度的提升IO、数据库连接数、降低单机硬件资源的瓶颈</p></li></ol><p>缺点：</p><ol><li>跨库的业务不能join，只能通过远程调用方式解决</li><li>分布式事务处理复杂</li></ol><p>垂直分库通过将表按业务分类，然后分布在不同数据库，并且可以将这些数据库部署在不同服务器上，从而达到多个服务器共同分摊压力的效果，但是依然没有解决单表数据量过大的问题。</p><h3 id="水平拆分"><a href="#水平拆分" class="headerlink" title="水平拆分"></a>水平拆分</h3><p><strong>水平分库是把同一个表的数据按一定规则拆到不同的数据库中，每个库可以放在不同的服务器上。</strong></p><p><img src="https://img-blog.csdnimg.cn/20190903074656538.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDA2MjMzOQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>优先级如下：</p><ol><li><p>垂直分表：<strong>可以把一个宽表的字段按访问频次、是否是大字段的原则拆分为多个表，这样既能使业务清晰，还能提升部分性能。拆分后，尽量从业务角度避免联查，否则性能方面将得不偿失。</strong></p></li><li><p>垂直分库：<strong>可以把多个表按业务耦合松紧归类，分别存放在不同的库，这些库可以分布在不同服务器，从而使访问压力被多服务器负载，大大提升性能，同时能提高整体架构的业务清晰度，不同的业务库可根据自身情况定制优化方案。但是它需要解决跨库带来的所有复杂问题。</strong></p></li><li><p>水平分库：<strong>可以把一个表的数据(按数据行)分到多个不同的库，每个库只有这个表的部分数据，这些库可以分布在不同服务器，从而使访问压力被多服务器负载，大大提升性能。它不仅需要解决跨库带来的所有复杂问题，还要解决数据路由的问题(数据路由问题后边介绍)。</strong></p></li><li><p>水平分表：<strong>可以把一个表的数据(按数据行)分到多个同一个数据库的多张表中，每个表只有这个表的部分数据，这样做能小幅提升性能，它仅仅作为水平分库的一个补充优化。</strong></p></li></ol><p>一般来说，在系统设计阶段就应该根据业务耦合松紧来确定垂直分库，垂直分表方案，在数据量及访问压力不是特别大的情况，首先考虑缓存、读写分离、索引技术等方案。若数据量极大，且持续增长，再考虑水平分库水平分表方案。</p><h1 id="最佳实践-Sharding-JDBC"><a href="#最佳实践-Sharding-JDBC" class="headerlink" title="最佳实践 Sharding-JDBC"></a>最佳实践 Sharding-JDBC</h1><blockquote><p>增强版JDBC, 简化对分库分表后，数据查询的操作</p><p>主要功能：</p><ol><li>数据分片</li><li>读写分离</li><li>分片策略定制化/无中心分布式主键</li></ol></blockquote>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;为什么需要分库分表&quot;&gt;&lt;a href=&quot;#为什么需要分库分表&quot; class=&quot;headerlink&quot; title=&quot;为什么需要分库分表&quot;&gt;&lt;/a&gt;为什么需要分库分表&lt;/h1&gt;&lt;p&gt;随着业务的发展，数据量的增加，单表数据量达到上限，性能瓶颈出现&lt;/p&gt;
+&lt;h2 id</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="http://example.com/2021/05/25/hello-world/"/>
+    <id>http://example.com/2021/05/25/hello-world/</id>
+    <published>2021-05-25T11:47:07.816Z</published>
+    <updated>2021-05-25T11:47:07.816Z</updated>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt; for</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+</feed>
