@@ -6,7 +6,7 @@
   <link href="http://nyanncat.github.io/atom.xml" rel="self"/>
   
   <link href="http://nyanncat.github.io/"/>
-  <updated>2021-05-25T12:44:57.472Z</updated>
+  <updated>2021-05-25T12:46:05.415Z</updated>
   <id>http://nyanncat.github.io/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>threadlocal</title>
+    <title>图解Threadlocal</title>
     <link href="http://nyanncat.github.io/2021/05/25/threadlocal/"/>
     <id>http://nyanncat.github.io/2021/05/25/threadlocal/</id>
     <published>2021-05-25T12:44:28.000Z</published>
-    <updated>2021-05-25T12:44:57.472Z</updated>
+    <updated>2021-05-25T12:46:05.415Z</updated>
     
     <content type="html"><![CDATA[<h1 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h1><blockquote><p>线程内部的局部变量，不同的线程之间不会相互干扰</p></blockquote><h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>为了保证多线程对共享变量的安全访问，通常使用锁来保证同一时刻只有一个线程对共享变量进行操作。</p><p>Thread Local 使共享资源在每个线程内都有独立的拷贝，避免了加锁。</p><p>常见场景：<strong>数据库连接</strong>，<strong>Session管理</strong>，<strong>Spring事务</strong></p><h2 id="内存泄漏"><a href="#内存泄漏" class="headerlink" title="内存泄漏"></a>内存泄漏</h2><ul><li><p><code>ThreadLocalMap</code> 中的<code>entity</code>使用<code>WeakReference</code>来避免<code>ThreadLocal</code>对象内存泄漏</p></li><li><p><code>Value</code> 仍然存在内存泄漏的风险，特别是使用线程池的情况下, <code>Thread</code>引用对象无法被回收</p><p>就其原因**<code>Thread</code>的生命周期和<code>ThreadLocalMap</code>的生命周期一致**</p></li><li><p>建议：==每次调用完成后，使用remove方法清理对象==</p></li></ul><p><img src="/2021/05/25/threadlocal/ThreadLocal.png" alt="ThreadLocal"></p>]]></content>
     
@@ -34,6 +34,8 @@
     
     
     
+    
+    <category term="Java" scheme="http://nyanncat.github.io/tags/Java/"/>
     
   </entry>
   
